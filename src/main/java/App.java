@@ -3,9 +3,9 @@ import static spark.Spark.*;
 import com.google.gson.Gson;
 import exceptions.ApiException;
 import models.Department;
-import models.Employee;
+import models.Staff;
 import models.Review;
-import models.dao.Sql2oFoodtypeDao;
+import models.dao.Sql2OStaffDao;
 import models.dao.Sql2ODepartmentDao;
 import models.dao.Sql2oReviewDao;
 import org.sql2o.Connection;
@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class App {
     public static void main(String[] args) {
-        Sql2oFoodtypeDao foodtypeDao;
+        Sql2OStaffDao foodtypeDao;
         Sql2ODepartmentDao restaurantDao;
         Sql2oReviewDao reviewDao;
         Connection conn;
@@ -28,7 +28,7 @@ public class App {
         Sql2o sql2o = new Sql2o(connectionString, "", "");
 
         restaurantDao = new Sql2ODepartmentDao(sql2o);
-        foodtypeDao = new Sql2oFoodtypeDao(sql2o);
+        foodtypeDao = new Sql2OStaffDao(sql2o);
         reviewDao = new Sql2oReviewDao(sql2o);
         conn = sql2o.open();
 
@@ -38,17 +38,17 @@ public class App {
             int restaurantId = Integer.parseInt(req.params("restaurantId"));
             int foodtypeId = Integer.parseInt(req.params("foodtypeId"));
             Department department = restaurantDao.findById(restaurantId);
-            Employee employee = foodtypeDao.findById(foodtypeId);
+            Staff staff = foodtypeDao.findById(foodtypeId);
 
 
-            if (department != null && employee != null){
+            if (department != null && staff != null){
                 //both exist and can be associated
-                foodtypeDao.addFoodtypeToRestaurant(employee, department);
+                foodtypeDao.addFoodtypeToRestaurant(staff, department);
                 res.status(201);
-                return gson.toJson(String.format("Department '%s' and Employee '%s' have been associated", employee.getName(), department.getName()));
+                return gson.toJson(String.format("Department '%s' and Staff '%s' have been associated", staff.getName(), department.getName()));
             }
             else {
-                throw new ApiException(404, String.format("Department or Employee does not exist"));
+                throw new ApiException(404, String.format("Department or Staff does not exist"));
             }
         });
 
@@ -68,8 +68,8 @@ public class App {
 
         get("/foodtypes/:id/restaurants", "application/json", (req, res) -> {
             int foodtypeId = Integer.parseInt(req.params("id"));
-            Employee employeeToFind = foodtypeDao.findById(foodtypeId);
-            if (employeeToFind == null){
+            Staff staffToFind = foodtypeDao.findById(foodtypeId);
+            if (staffToFind == null){
                 throw new ApiException(404, String.format("No foodtype with the id: \"%s\" exists", req.params("id")));
             }
             else if (foodtypeDao.getAllRestaurantsForAFoodtype(foodtypeId).size()==0){
@@ -92,10 +92,10 @@ public class App {
         });
 
         post("/foodtypes/new", "application/json", (req, res) -> {
-            Employee employee = gson.fromJson(req.body(), Employee.class);
-            foodtypeDao.add(employee);
+            Staff staff = gson.fromJson(req.body(), Staff.class);
+            foodtypeDao.add(staff);
             res.status(201);
-            return gson.toJson(employee);
+            return gson.toJson(staff);
         });
 
         //READ

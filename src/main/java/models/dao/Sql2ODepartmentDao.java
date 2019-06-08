@@ -1,7 +1,7 @@
 package models.dao;
 
 import models.Department;
-import models.Employee;
+import models.Staff;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
@@ -92,12 +92,12 @@ public class Sql2ODepartmentDao implements DepartmentDao { //don't forget to sha
     }
 
     @Override
-    public void addRestaurantToFoodtype(Department department, Employee employee){
+    public void addRestaurantToFoodtype(Department department, Staff staff){
         String sql = "INSERT INTO restaurants_foodtypes (restaurantid, foodtypeid) VALUES (:restaurantId, :foodtypeId)";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
                     .addParameter("restaurantId", department.getId())
-                    .addParameter("foodtypeId", employee.getId())
+                    .addParameter("foodtypeId", staff.getId())
                     .executeUpdate();
         } catch (Sql2oException ex){
             System.out.println(ex);
@@ -105,8 +105,8 @@ public class Sql2ODepartmentDao implements DepartmentDao { //don't forget to sha
     }
 
     @Override
-    public List<Employee> getAllFoodtypesByRestaurant(int restaurantId){
-        List<Employee> employees = new ArrayList(); //empty list
+    public List<Staff> getAllFoodtypesByRestaurant(int restaurantId){
+        List<Staff> staff = new ArrayList(); //empty list
         String joinQuery = "SELECT foodtypeid FROM restaurants_foodtypes WHERE restaurantid = :restaurantId";
 
         try (Connection con = sql2o.open()) {
@@ -114,15 +114,15 @@ public class Sql2ODepartmentDao implements DepartmentDao { //don't forget to sha
                     .addParameter("restaurantId", restaurantId)
                     .executeAndFetch(Integer.class);
             for (Integer foodId : allFoodtypesIds){
-                String foodtypeQuery = "SELECT * FROM employees WHERE id = :foodtypeId";
-                employees.add(
+                String foodtypeQuery = "SELECT * FROM staff WHERE id = :foodtypeId";
+                staff.add(
                         con.createQuery(foodtypeQuery)
                                 .addParameter("foodtypeId", foodId)
-                                .executeAndFetchFirst(Employee.class));
+                                .executeAndFetchFirst(Staff.class));
             }
         } catch (Sql2oException ex){
             System.out.println(ex);
         }
-        return employees;
+        return staff;
     }
 }

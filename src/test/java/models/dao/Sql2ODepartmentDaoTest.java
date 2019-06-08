@@ -1,7 +1,7 @@
 package models.dao;
 
 import models.Department;
-import models.Employee;
+import models.Staff;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +16,7 @@ import static org.junit.Assert.assertNotEquals;
 public class Sql2ODepartmentDaoTest {
     private Connection conn;
     private Sql2ODepartmentDao restaurantDao;
-    private Sql2oFoodtypeDao foodtypeDao;
+    private Sql2OStaffDao foodtypeDao;
     private Sql2oReviewDao reviewDao;
 
     @Before
@@ -24,7 +24,7 @@ public class Sql2ODepartmentDaoTest {
         String connectionString = "jdbc:h2:mem:testing;INIT=RUNSCRIPT from 'classpath:db/create.sql'";
         Sql2o sql2o = new Sql2o(connectionString, "", "");
         restaurantDao = new Sql2ODepartmentDao(sql2o);
-        foodtypeDao = new Sql2oFoodtypeDao(sql2o);
+        foodtypeDao = new Sql2OStaffDao(sql2o);
         reviewDao = new Sql2oReviewDao(sql2o);
         conn = sql2o.open();
     }
@@ -89,20 +89,20 @@ public class Sql2ODepartmentDaoTest {
 
     @Test
     public void RestaurantReturnsFoodtypesCorrectly() throws Exception {
-        Employee testEmployee = new Employee("Seafood");
-        foodtypeDao.add(testEmployee);
+        Staff testStaff = new Staff("Seafood");
+        foodtypeDao.add(testStaff);
 
-        Employee otherEmployee = new Employee("Bar Food");
-        foodtypeDao.add(otherEmployee);
+        Staff otherStaff = new Staff("Bar Food");
+        foodtypeDao.add(otherStaff);
 
         Department testDepartment = setupRestaurant();
         restaurantDao.add(testDepartment);
-        restaurantDao.addRestaurantToFoodtype(testDepartment, testEmployee);
-        restaurantDao.addRestaurantToFoodtype(testDepartment, otherEmployee);
+        restaurantDao.addRestaurantToFoodtype(testDepartment, testStaff);
+        restaurantDao.addRestaurantToFoodtype(testDepartment, otherStaff);
 
-        Employee[] employees = {testEmployee, otherEmployee}; //oh hi what is this?
+        Staff[] staff = {testStaff, otherStaff}; //oh hi what is this?
 
-        assertEquals(Arrays.asList(employees), restaurantDao.getAllFoodtypesByRestaurant(testDepartment.getId()));
+        assertEquals(Arrays.asList(staff), restaurantDao.getAllFoodtypesByRestaurant(testDepartment.getId()));
     }
 
 

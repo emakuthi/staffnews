@@ -2,11 +2,11 @@ package models;
 
 import java.util.Objects;
 
-public class Employee {
+public class Staff {
     private String name;
     private int id;
 
-    public Employee(String name) {
+    public Staff(String name) {
         this.name = name;
     }
 
@@ -29,10 +29,10 @@ public class Employee {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Employee)) return false;
-        Employee employee = (Employee) o;
-        return id == employee.id &&
-                Objects.equals(name, employee.name);
+        if (!(o instanceof Staff)) return false;
+        Staff staff = (Staff) o;
+        return id == staff.id &&
+                Objects.equals(name, staff.name);
     }
 
     @Override
