@@ -1,7 +1,7 @@
 package models.dao;
 
 import models.Department;
-import models.Foodtype;
+import models.Employee;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +11,7 @@ import org.sql2o.Sql2o;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-public class Sql2oFoodtypeDaoTest {
+public class Sql2OEmployeeDaoTest {
     private Sql2oFoodtypeDao foodtypeDao;
     private Sql2ODepartmentDao restaurantDao;
     private Connection conn;
@@ -32,15 +32,15 @@ public class Sql2oFoodtypeDaoTest {
 
     @Test
     public void addingFoodSetsId() throws Exception {
-        Foodtype testFoodtype = setupNewFoodtype();
-        int originalFoodtypeId = testFoodtype.getId();
-        foodtypeDao.add(testFoodtype);
-        assertNotEquals(originalFoodtypeId,testFoodtype.getId());
+        Employee testEmployee = setupNewFoodtype();
+        int originalFoodtypeId = testEmployee.getId();
+        foodtypeDao.add(testEmployee);
+        assertNotEquals(originalFoodtypeId, testEmployee.getId());
     }
 
     @Test
     public void addedFoodtypesAreReturnedFromGetAll() throws Exception {
-        Foodtype testfoodtype = setupNewFoodtype();
+        Employee testfoodtype = setupNewFoodtype();
         foodtypeDao.add(testfoodtype);
         assertEquals(1, foodtypeDao.getAll().size());
     }
@@ -52,16 +52,16 @@ public class Sql2oFoodtypeDaoTest {
 
     @Test
     public void deleteByIdDeletesCorrectFoodtype() throws Exception {
-        Foodtype foodtype = setupNewFoodtype();
-        foodtypeDao.add(foodtype);
-        foodtypeDao.deleteById(foodtype.getId());
+        Employee employee = setupNewFoodtype();
+        foodtypeDao.add(employee);
+        foodtypeDao.deleteById(employee.getId());
         assertEquals(0, foodtypeDao.getAll().size());
     }
 
     @Test
     public void clearAll() throws Exception {
-        Foodtype testFoodtype = setupNewFoodtype();
-        Foodtype otherFoodtype = setupNewFoodtype();
+        Employee testEmployee = setupNewFoodtype();
+        Employee otherEmployee = setupNewFoodtype();
         foodtypeDao.clearAll();
         assertEquals(0, foodtypeDao.getAll().size());
     }
@@ -75,20 +75,20 @@ public class Sql2oFoodtypeDaoTest {
         restaurantDao.add(testDepartment);
         restaurantDao.add(altDepartment);
 
-        Foodtype testFoodtype = setupNewFoodtype();
+        Employee testEmployee = setupNewFoodtype();
 
-        foodtypeDao.add(testFoodtype);
+        foodtypeDao.add(testEmployee);
 
-        foodtypeDao.addFoodtypeToRestaurant(testFoodtype, testDepartment);
-        foodtypeDao.addFoodtypeToRestaurant(testFoodtype, altDepartment);
+        foodtypeDao.addFoodtypeToRestaurant(testEmployee, testDepartment);
+        foodtypeDao.addFoodtypeToRestaurant(testEmployee, altDepartment);
 
-        assertEquals(2, foodtypeDao.getAllRestaurantsForAFoodtype(testFoodtype.getId()).size());
+        assertEquals(2, foodtypeDao.getAllRestaurantsForAFoodtype(testEmployee.getId()).size());
     }
 
     // helpers
 
-    public Foodtype setupNewFoodtype(){
-        return new Foodtype("Sushi");
+    public Employee setupNewFoodtype(){
+        return new Employee("Sushi");
     }
 
     public Department setupRestaurant (){

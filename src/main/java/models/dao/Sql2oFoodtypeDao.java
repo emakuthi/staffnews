@@ -1,7 +1,7 @@
 package models.dao;
 
 import models.Department;
-import models.Foodtype;
+import models.Employee;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
@@ -14,24 +14,24 @@ public class Sql2oFoodtypeDao implements FoodtypeDao{ //don't forget to shake ha
     public Sql2oFoodtypeDao(Sql2o sql2o){ this.sql2o = sql2o; }
 
     @Override
-    public void add(Foodtype foodtype) {
+    public void add(Employee employee) {
         String sql = "INSERT INTO foodtypes (name) VALUES (:name)";
         try(Connection con = sql2o.open()){
             int id = (int) con.createQuery(sql, true)
-                    .bind(foodtype)
+                    .bind(employee)
                     .executeUpdate()
                     .getKey();
-            foodtype.setId(id);
+            employee.setId(id);
         } catch (Sql2oException ex) {
             System.out.println(ex);
         }
     }
 
     @Override
-    public List<Foodtype> getAll() {
+    public List<Employee> getAll() {
         try(Connection con = sql2o.open()){
             return con.createQuery("SELECT * FROM foodtypes")
-                    .executeAndFetch(Foodtype.class);
+                    .executeAndFetch(Employee.class);
         }
     }
 
@@ -63,12 +63,12 @@ public class Sql2oFoodtypeDao implements FoodtypeDao{ //don't forget to shake ha
     }
 
     @Override
-    public void addFoodtypeToRestaurant(Foodtype foodtype, Department department){
+    public void addFoodtypeToRestaurant(Employee employee, Department department){
         String sql = "INSERT INTO restaurants_foodtypes (restaurantid, foodtypeid) VALUES (:restaurantId, :foodtypeId)";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
                     .addParameter("restaurantId", department.getId())
-                    .addParameter("foodtypeId", foodtype.getId())
+                    .addParameter("foodtypeId", employee.getId())
                     .executeUpdate();
         } catch (Sql2oException ex){
             System.out.println(ex);
@@ -98,11 +98,11 @@ public class Sql2oFoodtypeDao implements FoodtypeDao{ //don't forget to shake ha
     }
 
     @Override
-    public Foodtype findById(int id) {
+    public Employee findById(int id) {
         try(Connection con = sql2o.open()){
             return con.createQuery("SELECT * FROM foodtypes WHERE id = :id")
                     .addParameter("id", id)
-                    .executeAndFetchFirst(Foodtype.class);
+                    .executeAndFetchFirst(Employee.class);
         }
     }
 

@@ -3,7 +3,7 @@ import static spark.Spark.*;
 import com.google.gson.Gson;
 import exceptions.ApiException;
 import models.Department;
-import models.Foodtype;
+import models.Employee;
 import models.Review;
 import models.dao.Sql2oFoodtypeDao;
 import models.dao.Sql2ODepartmentDao;
@@ -38,17 +38,17 @@ public class App {
             int restaurantId = Integer.parseInt(req.params("restaurantId"));
             int foodtypeId = Integer.parseInt(req.params("foodtypeId"));
             Department department = restaurantDao.findById(restaurantId);
-            Foodtype foodtype = foodtypeDao.findById(foodtypeId);
+            Employee employee = foodtypeDao.findById(foodtypeId);
 
 
-            if (department != null && foodtype != null){
+            if (department != null && employee != null){
                 //both exist and can be associated
-                foodtypeDao.addFoodtypeToRestaurant(foodtype, department);
+                foodtypeDao.addFoodtypeToRestaurant(employee, department);
                 res.status(201);
-                return gson.toJson(String.format("Department '%s' and Foodtype '%s' have been associated",foodtype.getName(), department.getName()));
+                return gson.toJson(String.format("Department '%s' and Employee '%s' have been associated", employee.getName(), department.getName()));
             }
             else {
-                throw new ApiException(404, String.format("Department or Foodtype does not exist"));
+                throw new ApiException(404, String.format("Department or Employee does not exist"));
             }
         });
 
@@ -68,8 +68,8 @@ public class App {
 
         get("/foodtypes/:id/restaurants", "application/json", (req, res) -> {
             int foodtypeId = Integer.parseInt(req.params("id"));
-            Foodtype foodtypeToFind = foodtypeDao.findById(foodtypeId);
-            if (foodtypeToFind == null){
+            Employee employeeToFind = foodtypeDao.findById(foodtypeId);
+            if (employeeToFind == null){
                 throw new ApiException(404, String.format("No foodtype with the id: \"%s\" exists", req.params("id")));
             }
             else if (foodtypeDao.getAllRestaurantsForAFoodtype(foodtypeId).size()==0){
@@ -92,10 +92,10 @@ public class App {
         });
 
         post("/foodtypes/new", "application/json", (req, res) -> {
-            Foodtype foodtype = gson.fromJson(req.body(), Foodtype.class);
-            foodtypeDao.add(foodtype);
+            Employee employee = gson.fromJson(req.body(), Employee.class);
+            foodtypeDao.add(employee);
             res.status(201);
-            return gson.toJson(foodtype);
+            return gson.toJson(employee);
         });
 
         //READ

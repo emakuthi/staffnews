@@ -1,19 +1,19 @@
 package models.dao;
 
-import models.Foodtype;
+import models.Employee;
 import models.Department;
 
 import java.util.List;
 
 public interface FoodtypeDao {
     //create
-    void add(Foodtype foodtype);
-    void addFoodtypeToRestaurant(Foodtype foodtype, Department department);
+    void add(Employee employee);
+    void addFoodtypeToRestaurant(Employee employee, Department department);
 
     //read
-    List<Foodtype> getAll();
+    List<Employee> getAll();
     List<Department> getAllRestaurantsForAFoodtype(int id);
-    Foodtype findById(int id);
+    Employee findById(int id);
 
     //update
     //omit for now

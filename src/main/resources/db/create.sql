@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS departments (
  email VARCHAR
 );
 
-CREATE TABLE IF NOT EXISTS foodtypes (
+CREATE TABLE IF NOT EXISTS employees (
  id int PRIMARY KEY auto_increment,
  name VARCHAR
 );

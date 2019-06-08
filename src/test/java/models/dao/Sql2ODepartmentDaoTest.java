@@ -1,7 +1,7 @@
 package models.dao;
 
 import models.Department;
-import models.Foodtype;
+import models.Employee;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -89,20 +89,20 @@ public class Sql2ODepartmentDaoTest {
 
     @Test
     public void RestaurantReturnsFoodtypesCorrectly() throws Exception {
-        Foodtype testFoodtype  = new Foodtype("Seafood");
-        foodtypeDao.add(testFoodtype);
+        Employee testEmployee = new Employee("Seafood");
+        foodtypeDao.add(testEmployee);
 
-        Foodtype otherFoodtype  = new Foodtype("Bar Food");
-        foodtypeDao.add(otherFoodtype);
+        Employee otherEmployee = new Employee("Bar Food");
+        foodtypeDao.add(otherEmployee);
 
         Department testDepartment = setupRestaurant();
         restaurantDao.add(testDepartment);
-        restaurantDao.addRestaurantToFoodtype(testDepartment,testFoodtype);
-        restaurantDao.addRestaurantToFoodtype(testDepartment,otherFoodtype);
+        restaurantDao.addRestaurantToFoodtype(testDepartment, testEmployee);
+        restaurantDao.addRestaurantToFoodtype(testDepartment, otherEmployee);
 
-        Foodtype[] foodtypes = {testFoodtype, otherFoodtype}; //oh hi what is this?
+        Employee[] employees = {testEmployee, otherEmployee}; //oh hi what is this?
 
-        assertEquals(Arrays.asList(foodtypes), restaurantDao.getAllFoodtypesByRestaurant(testDepartment.getId()));
+        assertEquals(Arrays.asList(employees), restaurantDao.getAllFoodtypesByRestaurant(testDepartment.getId()));
     }
 
 

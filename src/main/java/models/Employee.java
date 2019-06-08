@@ -2,11 +2,11 @@ package models;
 
 import java.util.Objects;
 
-public class Foodtype {
+public class Employee {
     private String name;
     private int id;
 
-    public Foodtype(String name) {
+    public Employee(String name) {
         this.name = name;
     }
 
@@ -29,10 +29,10 @@ public class Foodtype {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Foodtype)) return false;
-        Foodtype foodtype = (Foodtype) o;
-        return id == foodtype.id &&
-                Objects.equals(name, foodtype.name);
+        if (!(o instanceof Employee)) return false;
+        Employee employee = (Employee) o;
+        return id == employee.id &&
+                Objects.equals(name, employee.name);
     }
 
     @Override
