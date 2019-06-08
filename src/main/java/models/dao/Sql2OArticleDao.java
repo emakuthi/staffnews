@@ -14,7 +14,7 @@ public class Sql2OArticleDao implements ArticleDao {
     @Override
     public void add(Article article) {
         String sql = "INSERT INTO articles (content, departmentid) VALUES (:content,:departmentId)"; //if you change your model, be sure to update here as well!
-        try (Connection con = sql2o.open()) {
+        try (Connection con = DB.sql2o.open()) {
             int id = (int) con.createQuery(sql, true)
                     .bind(article)
                     .executeUpdate()
@@ -27,7 +27,7 @@ public class Sql2OArticleDao implements ArticleDao {
 
     @Override
     public List<Article> getAll() {
-        try (Connection con = sql2o.open()) {
+        try (Connection con = DB.sql2o.open()) {
             return con.createQuery("SELECT * FROM articles")
                     .executeAndFetch(Article.class);
         }
@@ -35,7 +35,7 @@ public class Sql2OArticleDao implements ArticleDao {
 
     @Override
     public List<Article> getAllArticlesByDepartment(int departmentId) {
-        try (Connection con = sql2o.open()) {
+        try (Connection con = DB.sql2o.open()) {
             return con.createQuery("SELECT * FROM articles WHERE departmentId = :departmentId")
                     .addParameter("departmentId", departmentId)
                     .executeAndFetch(Article.class);
@@ -45,7 +45,7 @@ public class Sql2OArticleDao implements ArticleDao {
     @Override
     public void deleteById(int id) {
         String sql = "DELETE from articles WHERE id=:id";
-        try (Connection con = sql2o.open()) {
+        try (Connection con = DB.sql2o.open()) {
             con.createQuery(sql)
                     .addParameter("id", id)
                     .executeUpdate();
@@ -57,7 +57,7 @@ public class Sql2OArticleDao implements ArticleDao {
     @Override
     public void clearAll() {
         String sql = "DELETE from articles";
-        try (Connection con = sql2o.open()) {
+        try (Connection con = DB.sql2o.open()) {
             con.createQuery(sql).executeUpdate();
         } catch (Sql2oException ex) {
             System.out.println(ex);

@@ -5,6 +5,7 @@ import exceptions.ApiException;
 import models.Article;
 import models.Department;
 import models.User;
+import models.dao.DB;
 import models.dao.Sql2OUserDao;
 import models.dao.Sql2ODepartmentDao;
 import models.dao.Sql2OArticleDao;
@@ -24,13 +25,13 @@ public class App {
         Gson gson = new Gson();
 
         staticFileLocation("/public");
-        String connectionString = "jdbc:h2:~/jadle.db;INIT=RUNSCRIPT from 'classpath:db/create.sql'";
-        Sql2o sql2o = new Sql2o(connectionString, "", "");
+//        String connectionString = "jdbc:h2:~/jadle.db;INIT=RUNSCRIPT from 'classpath:db/create.sql'";
+//        Sql2o sql2o = new Sql2o(connectionString, "", "");
 
-        departmentDao = new Sql2ODepartmentDao(sql2o);
-        userDao = new Sql2OUserDao(sql2o);
-        articleDao = new Sql2OArticleDao(sql2o);
-        conn = sql2o.open();
+        departmentDao = new Sql2ODepartmentDao(DB.sql2o);
+        userDao = new Sql2OUserDao(DB.sql2o);
+        articleDao = new Sql2OArticleDao(DB.sql2o);
+        conn = DB.sql2o.open();
 
         //CREATE
         post("/departments/:departmentId/user/:userId", "application/json", (req, res) -> {
