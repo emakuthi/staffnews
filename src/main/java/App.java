@@ -18,6 +18,20 @@ import java.util.Map;
 
 public class App {
     public static void main(String[] args) {
+
+
+        ProcessBuilder process=new ProcessBuilder();
+        Integer port;
+
+        if(process.environment().get("PORT")!=null){
+            port = Integer.parseInt(process.environment().get("PORT"));
+        } else {
+            port = 4567;
+        }
+
+        port(port);
+
+
         Sql2OUserDao userDao;
         Sql2ODepartmentDao departmentDao;
         Sql2OArticleDao articleDao;
@@ -25,9 +39,6 @@ public class App {
         Gson gson = new Gson();
 
         staticFileLocation("/public");
-//        String connectionString = "jdbc:h2:~/jadle.db;INIT=RUNSCRIPT from 'classpath:db/create.sql'";
-//        Sql2o sql2o = new Sql2o(connectionString, "", "");
-
         departmentDao = new Sql2ODepartmentDao(DB.sql2o);
         userDao = new Sql2OUserDao(DB.sql2o);
         articleDao = new Sql2OArticleDao(DB.sql2o);
