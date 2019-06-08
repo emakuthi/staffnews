@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import exceptions.ApiException;
 import models.Article;
 import models.Department;
-import models.Staff;
-import models.dao.Sql2OStaffDao;
+import models.User;
+import models.dao.Sql2OUserDao;
 import models.dao.Sql2ODepartmentDao;
 import models.dao.Sql2OArticleDao;
 import org.sql2o.Connection;
@@ -17,9 +17,9 @@ import java.util.Map;
 
 public class App {
     public static void main(String[] args) {
-        Sql2OStaffDao foodtypeDao;
-        Sql2ODepartmentDao restaurantDao;
-        Sql2OArticleDao reviewDao;
+        Sql2OUserDao userDao;
+        Sql2ODepartmentDao departmentDao;
+        Sql2OArticleDao articleDao;
         Connection conn;
         Gson gson = new Gson();
 
@@ -27,124 +27,124 @@ public class App {
         String connectionString = "jdbc:h2:~/jadle.db;INIT=RUNSCRIPT from 'classpath:db/create.sql'";
         Sql2o sql2o = new Sql2o(connectionString, "", "");
 
-        restaurantDao = new Sql2ODepartmentDao(sql2o);
-        foodtypeDao = new Sql2OStaffDao(sql2o);
-        reviewDao = new Sql2OArticleDao(sql2o);
+        departmentDao = new Sql2ODepartmentDao(sql2o);
+        userDao = new Sql2OUserDao(sql2o);
+        articleDao = new Sql2OArticleDao(sql2o);
         conn = sql2o.open();
 
         //CREATE
-        post("/restaurants/:restaurantId/foodtype/:foodtypeId", "application/json", (req, res) -> {
+        post("/departments/:departmentId/user/:userId", "application/json", (req, res) -> {
 
-            int restaurantId = Integer.parseInt(req.params("restaurantId"));
-            int foodtypeId = Integer.parseInt(req.params("foodtypeId"));
-            Department department = restaurantDao.findById(restaurantId);
-            Staff staff = foodtypeDao.findById(foodtypeId);
+            int departmentId = Integer.parseInt(req.params("departmentId"));
+            int userId = Integer.parseInt(req.params("userId"));
+            Department department = departmentDao.findById(departmentId);
+            User user = userDao.findById(userId);
 
 
-            if (department != null && staff != null){
+            if (department != null && user != null){
                 //both exist and can be associated
-                foodtypeDao.addFoodtypeToRestaurant(staff, department);
+                userDao.addUserToDepartment(user, department);
                 res.status(201);
-                return gson.toJson(String.format("Department '%s' and Staff '%s' have been associated", staff.getName(), department.getName()));
+                return gson.toJson(String.format("Department '%s' and User '%s' have been associated", user.getName(), department.getName()));
             }
             else {
-                throw new ApiException(404, String.format("Department or Staff does not exist"));
+                throw new ApiException(404, String.format("Department or User does not exist"));
             }
         });
 
-        get("/restaurants/:id/foodtypes", "application/json", (req, res) -> {
-            int restaurantId = Integer.parseInt(req.params("id"));
-            Department departmentToFind = restaurantDao.findById(restaurantId);
+        get("/departments/:id/users", "application/json", (req, res) -> {
+            int departmentId = Integer.parseInt(req.params("id"));
+            Department departmentToFind = departmentDao.findById(departmentId);
             if (departmentToFind == null){
-                throw new ApiException(404, String.format("No restaurant with the id: \"%s\" exists", req.params("id")));
+                throw new ApiException(404, String.format("No department with the id: \"%s\" exists", req.params("id")));
             }
-            else if (restaurantDao.getAllFoodtypesByRestaurant(restaurantId).size()==0){
-                return "{\"message\":\"I'm sorry, but no foodtypes are listed for this restaurant.\"}";
+            else if (departmentDao.getAllUsersByDepartment(departmentId).size()==0){
+                return "{\"message\":\"I'm sorry, but no users are listed for this department.\"}";
             }
             else {
-                return gson.toJson(restaurantDao.getAllFoodtypesByRestaurant(restaurantId));
+                return gson.toJson(departmentDao.getAllUsersByDepartment(departmentId));
             }
         });
 
-        get("/foodtypes/:id/restaurants", "application/json", (req, res) -> {
-            int foodtypeId = Integer.parseInt(req.params("id"));
-            Staff staffToFind = foodtypeDao.findById(foodtypeId);
-            if (staffToFind == null){
-                throw new ApiException(404, String.format("No foodtype with the id: \"%s\" exists", req.params("id")));
+        get("/users/:id/departments", "application/json", (req, res) -> {
+            int userId = Integer.parseInt(req.params("id"));
+            User userToFind = userDao.findById(userId);
+            if (userToFind == null){
+                throw new ApiException(404, String.format("No user with the id: \"%s\" exists", req.params("id")));
             }
-            else if (foodtypeDao.getAllRestaurantsForAFoodtype(foodtypeId).size()==0){
-                return "{\"message\":\"I'm sorry, but no restaurants are listed for this foodtype.\"}";
+            else if (userDao.getAllDepartmentsForAUser(userId).size()==0){
+                return "{\"message\":\"I'm sorry, but no departments are listed for this user.\"}";
             }
             else {
-                return gson.toJson(foodtypeDao.getAllRestaurantsForAFoodtype(foodtypeId));
+                return gson.toJson(userDao.getAllDepartmentsForAUser(userId));
             }
         });
 
 
-        post("/restaurants/:restaurantId/reviews/new", "application/json", (req, res) -> {
-            int restaurantId = Integer.parseInt(req.params("restaurantId"));
+        post("/departments/:departmentId/articles/new", "application/json", (req, res) -> {
+            int departmentId = Integer.parseInt(req.params("departmentId"));
             Article article = gson.fromJson(req.body(), Article.class);
 
-            article.setRestaurantId(restaurantId); //we need to set this separately because it comes from our route, not our JSON input.
-            reviewDao.add(article);
+            article.setDepartmentId(departmentId);
+            articleDao.add(article);
             res.status(201);
             return gson.toJson(article);
         });
 
-        post("/foodtypes/new", "application/json", (req, res) -> {
-            Staff staff = gson.fromJson(req.body(), Staff.class);
-            foodtypeDao.add(staff);
+        post("/users/new", "application/json", (req, res) -> {
+            User user = gson.fromJson(req.body(), User.class);
+            userDao.add(user);
             res.status(201);
-            return gson.toJson(staff);
+            return gson.toJson(user);
         });
 
         //READ
-        get("/restaurants", "application/json", (req, res) -> {
-            System.out.println(restaurantDao.getAll());
+        get("/departments", "application/json", (req, res) -> {
+            System.out.println(departmentDao.getAll());
 
-            if(restaurantDao.getAll().size() > 0){
-                return gson.toJson(restaurantDao.getAll());
+            if(departmentDao.getAll().size() > 0){
+                return gson.toJson(departmentDao.getAll());
             }
 
             else {
-                return "{\"message\":\"I'm sorry, but no restaurants are currently listed in the database.\"}";
+                return "{\"message\":\"I'm sorry, but no departments are currently listed in the database.\"}";
             }
 
         });
 
-        get("/restaurants/:id", "application/json", (req, res) -> { //accept a request in format JSON from an app
-            int restaurantId = Integer.parseInt(req.params("id"));
-            Department departmentToFind = restaurantDao.findById(restaurantId);
+        get("/departments/:id", "application/json", (req, res) -> { //accept a request in format JSON from an app
+            int departmentId = Integer.parseInt(req.params("id"));
+            Department departmentToFind = departmentDao.findById(departmentId);
             if (departmentToFind == null){
-                throw new ApiException(404, String.format("No restaurant with the id: \"%s\" exists", req.params("id")));
+                throw new ApiException(404, String.format("No department with the id: \"%s\" exists", req.params("id")));
             }
             return gson.toJson(departmentToFind);
         });
 
-        get("/restaurants/:id/reviews", "application/json", (req, res) -> {
-            int restaurantId = Integer.parseInt(req.params("id"));
+        get("/departments/:id/articles", "application/json", (req, res) -> {
+            int departmentId = Integer.parseInt(req.params("id"));
 
-            Department departmentToFind = restaurantDao.findById(restaurantId);
+            Department departmentToFind = departmentDao.findById(departmentId);
             List<Article> allArticles;
 
             if (departmentToFind == null){
-                throw new ApiException(404, String.format("No restaurant with the id: \"%s\" exists", req.params("id")));
+                throw new ApiException(404, String.format("No department with the id: \"%s\" exists", req.params("id")));
             }
 
-            allArticles = reviewDao.getAllReviewsByRestaurant(restaurantId);
+            allArticles = articleDao.getAllArticlesByDepartment(departmentId);
 
             return gson.toJson(allArticles);
         });
 
-        get("/foodtypes", "application/json", (req, res) -> {
-            return gson.toJson(foodtypeDao.getAll());
+        get("/users", "application/json", (req, res) -> {
+            return gson.toJson(userDao.getAll());
         });
 
 
         //CREATE
-        post("/restaurants/new", "application/json", (req, res) -> {
+        post("/departments/new", "application/json", (req, res) -> {
             Department department = gson.fromJson(req.body(), Department.class);
-            restaurantDao.add(department);
+            departmentDao.add(department);
             res.status(201);
             return gson.toJson(department);
         });

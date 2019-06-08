@@ -1,7 +1,7 @@
 package models.dao;
 
 import models.Department;
-import models.Staff;
+import models.User;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,17 +15,17 @@ import static org.junit.Assert.assertNotEquals;
 
 public class Sql2ODepartmentDaoTest {
     private Connection conn;
-    private Sql2ODepartmentDao restaurantDao;
-    private Sql2OStaffDao foodtypeDao;
-    private Sql2OArticleDao reviewDao;
+    private Sql2ODepartmentDao departmentDao;
+    private Sql2OUserDao userDao;
+    private Sql2OArticleDao articleDao;
 
     @Before
     public void setUp() throws Exception {
         String connectionString = "jdbc:h2:mem:testing;INIT=RUNSCRIPT from 'classpath:db/create.sql'";
         Sql2o sql2o = new Sql2o(connectionString, "", "");
-        restaurantDao = new Sql2ODepartmentDao(sql2o);
-        foodtypeDao = new Sql2OStaffDao(sql2o);
-        reviewDao = new Sql2OArticleDao(sql2o);
+        departmentDao = new Sql2ODepartmentDao(sql2o);
+        userDao = new Sql2OUserDao(sql2o);
+        articleDao = new Sql2OArticleDao(sql2o);
         conn = sql2o.open();
     }
 
@@ -36,87 +36,84 @@ public class Sql2ODepartmentDaoTest {
 
     @Test
     public void addingFoodSetsId() throws Exception {
-        Department testDepartment = setupRestaurant();
+        Department testDepartment = setupDepartment();
         assertNotEquals(0, testDepartment.getId());
     }
 
     @Test
-    public void addedRestaurantsAreReturnedFromGetAll() throws Exception {
-        Department testDepartment = setupRestaurant();
-        assertEquals(1, restaurantDao.getAll().size());
+    public void addedDepartmentsAreReturnedFromGetAll() throws Exception {
+        Department testDepartment = setupDepartment();
+        assertEquals(1, departmentDao.getAll().size());
     }
 
     @Test
-    public void noRestaurantsReturnsEmptyList() throws Exception {
-        assertEquals(0, restaurantDao.getAll().size());
+    public void noDepartmentsReturnsEmptyList() throws Exception {
+        assertEquals(0, departmentDao.getAll().size());
     }
 
     @Test
-    public void findByIdReturnsCorrectRestaurant() throws Exception {
-        Department testDepartment = setupRestaurant();
-        Department otherDepartment = setupRestaurant();
-        assertEquals(testDepartment, restaurantDao.findById(testDepartment.getId()));
+    public void findByIdReturnsCorrectDepartment() throws Exception {
+        Department testDepartment = setupDepartment();
+        Department otherDepartment = setupDepartment();
+        assertEquals(testDepartment, departmentDao.findById(testDepartment.getId()));
     }
 
     @Test
     public void updateCorrectlyUpdatesAllFields() throws Exception {
-        Department testDepartment = setupRestaurant();
-        restaurantDao.update(testDepartment.getId(), "a", "b", "c", "d", "e", "f");
-        Department foundDepartment = restaurantDao.findById(testDepartment.getId());
+        Department testDepartment = setupDepartment();
+        departmentDao.update(testDepartment.getId(), "a", "b");
+        Department foundDepartment = departmentDao.findById(testDepartment.getId());
         assertEquals("a", foundDepartment.getName());
-        assertEquals("b", foundDepartment.getAddress());
-        assertEquals("c", foundDepartment.getZipcode());
-        assertEquals("d", foundDepartment.getPhone());
-        assertEquals("e", foundDepartment.getWebsite());
-        assertEquals("f", foundDepartment.getEmail());
+        assertEquals("b", foundDepartment.getDescription());
+       
     }
 
     @Test
-    public void deleteByIdDeletesCorrectRestaurant() throws Exception {
-        Department testDepartment = setupRestaurant();
-        Department otherDepartment = setupRestaurant();
-        restaurantDao.deleteById(testDepartment.getId());
-        assertEquals(1, restaurantDao.getAll().size());
+    public void deleteByIdDeletesCorrectDepartment() throws Exception {
+        Department testDepartment = setupDepartment();
+        Department otherDepartment = setupDepartment();
+        departmentDao.deleteById(testDepartment.getId());
+        assertEquals(1, departmentDao.getAll().size());
     }
 
     @Test
     public void clearAll() throws Exception {
-        Department testDepartment = setupRestaurant();
-        Department otherDepartment = setupRestaurant();
-        restaurantDao.clearAll();
-        assertEquals(0, restaurantDao.getAll().size());
+        Department testDepartment = setupDepartment();
+        Department otherDepartment = setupDepartment();
+        departmentDao.clearAll();
+        assertEquals(0, departmentDao.getAll().size());
     }
 
     @Test
-    public void RestaurantReturnsFoodtypesCorrectly() throws Exception {
-        Staff testStaff = new Staff("Seafood");
-        foodtypeDao.add(testStaff);
+    public void DepartmentReturnsUsersCorrectly() throws Exception {
+        User testUser = new User("Seafood","ek213","engineer");
+        userDao.add(testUser);
 
-        Staff otherStaff = new Staff("Bar Food");
-        foodtypeDao.add(otherStaff);
+        User otherUser = new User("Bar Food", "ek167", "principal");
+        userDao.add(otherUser);
 
-        Department testDepartment = setupRestaurant();
-        restaurantDao.add(testDepartment);
-        restaurantDao.addRestaurantToFoodtype(testDepartment, testStaff);
-        restaurantDao.addRestaurantToFoodtype(testDepartment, otherStaff);
+        Department testDepartment = setupDepartment();
+        departmentDao.add(testDepartment);
+        departmentDao.addDepartmentToUser(testDepartment, testUser);
+        departmentDao.addDepartmentToUser(testDepartment, otherUser);
 
-        Staff[] staff = {testStaff, otherStaff}; //oh hi what is this?
+        User[] users = {testUser, otherUser}; //oh hi what is this?
 
-        assertEquals(Arrays.asList(staff), restaurantDao.getAllFoodtypesByRestaurant(testDepartment.getId()));
+        assertEquals(Arrays.asList(users), departmentDao.getAllUsersByDepartment(testDepartment.getId()));
     }
 
 
     //helpers
 
-    public Department setupRestaurant (){
-        Department department = new Department("Fish Omena", "214 NE Ngara", "97232", "254-402-9874", "http://fishwitch.com", "hellofishy@fishwitch.com");
-        restaurantDao.add(department);
+    public Department setupDepartment (){
+        Department department = new Department("Fish Omena", "214 NE Ngara");
+        departmentDao.add(department);
         return department;
     }
 
-    public Department setupAltRestaurant (){
-        Department department = new Department("Fish Omena", "214 NE Ngara", "97232", "254-402-9874");
-        restaurantDao.add(department);
+    public Department setupAltDepartment (){
+        Department department = new Department("Fish Omena", "214 NE Ngara");
+        departmentDao.add(department);
         return department;
     }
 }

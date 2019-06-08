@@ -4,72 +4,50 @@ import java.util.Objects;
 
 public class Article {
     private String content;
-    private String writtenBy;
-    private int rating;
     private int id;
-    private int restaurantId; //will be used to connect Department to Article (one-to-many)
+    private int departmentId;
 
-    public Article(String content, String writtenBy, int rating, int restaurantId) {
+    public Article(String content,int departmentId) {
         this.content = content;
-        this.writtenBy = writtenBy;
-        this.rating = rating;
-        this.restaurantId = restaurantId;
+        this.departmentId = departmentId;
     }
 
     public String getContent() {
         return content;
     }
 
-    public String getWrittenBy() {
-        return writtenBy;
-    }
-
-    public int getRating() {
-        return rating;
-    }
-
     public int getId() {
         return id;
     }
 
-    public int getRestaurantId() {
-        return restaurantId;
+    public int getDepartmentId() {
+        return departmentId;
     }
 
     public void setContent(String content) {
         this.content = content;
     }
-
-    public void setWrittenBy(String writtenBy) {
-        this.writtenBy = writtenBy;
-    }
-
-    public void setRating(int rating) {
-        this.rating = rating;
-    }
-
+    
     public void setId(int id) {
         this.id = id;
     }
 
-    public void setRestaurantId(int restaurantId) {
-        this.restaurantId = restaurantId;
+    public void setDepartmentId(int departmentId) {
+        this.departmentId = departmentId;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Article)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Article article = (Article) o;
-        return rating == article.rating &&
-                id == article.id &&
-                restaurantId == article.restaurantId &&
-                Objects.equals(content, article.content) &&
-                Objects.equals(writtenBy, article.writtenBy);
+        return getId() == article.getId() &&
+                getDepartmentId() == article.getDepartmentId() &&
+                getContent().equals(article.getContent());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(content, writtenBy, rating, id, restaurantId);
+        return Objects.hash(getContent(), getId(), getDepartmentId());
     }
 }

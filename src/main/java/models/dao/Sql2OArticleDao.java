@@ -13,7 +13,7 @@ public class Sql2OArticleDao implements ArticleDao {
 
     @Override
     public void add(Article article) {
-        String sql = "INSERT INTO reviews (writtenby, content, rating, restaurantid) VALUES (:writtenBy, :content, :rating, :restaurantId)"; //if you change your model, be sure to update here as well!
+        String sql = "INSERT INTO articles (content, departmentid) VALUES (:content,:departmentId)"; //if you change your model, be sure to update here as well!
         try (Connection con = sql2o.open()) {
             int id = (int) con.createQuery(sql, true)
                     .bind(article)
@@ -28,23 +28,23 @@ public class Sql2OArticleDao implements ArticleDao {
     @Override
     public List<Article> getAll() {
         try (Connection con = sql2o.open()) {
-            return con.createQuery("SELECT * FROM reviews")
+            return con.createQuery("SELECT * FROM articles")
                     .executeAndFetch(Article.class);
         }
     }
 
     @Override
-    public List<Article> getAllReviewsByRestaurant(int restaurantId) {
+    public List<Article> getAllArticlesByDepartment(int departmentId) {
         try (Connection con = sql2o.open()) {
-            return con.createQuery("SELECT * FROM reviews WHERE restaurantId = :restaurantId")
-                    .addParameter("restaurantId", restaurantId)
+            return con.createQuery("SELECT * FROM articles WHERE departmentId = :departmentId")
+                    .addParameter("departmentId", departmentId)
                     .executeAndFetch(Article.class);
         }
     }
 
     @Override
     public void deleteById(int id) {
-        String sql = "DELETE from reviews WHERE id=:id";
+        String sql = "DELETE from articles WHERE id=:id";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
                     .addParameter("id", id)
@@ -56,7 +56,7 @@ public class Sql2OArticleDao implements ArticleDao {
 
     @Override
     public void clearAll() {
-        String sql = "DELETE from reviews";
+        String sql = "DELETE from articles";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql).executeUpdate();
         } catch (Sql2oException ex) {

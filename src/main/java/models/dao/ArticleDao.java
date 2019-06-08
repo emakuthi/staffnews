@@ -10,7 +10,7 @@ public interface ArticleDao {
 
     //read
     List<Article> getAll();
-    List<Article> getAllReviewsByRestaurant(int restaurantId);
+    List<Article> getAllArticlesByDepartment(int departmentId);
 
     //update
     //omit for now

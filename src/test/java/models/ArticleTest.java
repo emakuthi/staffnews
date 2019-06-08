@@ -30,43 +30,18 @@ public class ArticleTest {
         assertNotEquals("Great service", testArticle.getContent());
     }
 
+    
     @Test
-    public void getWrittenBy() {
+    public void getDepartmentId() {
         Article testArticle = setupReview();
-        assertEquals("Kim", testArticle.getWrittenBy());
+        assertEquals(1, testArticle.getDepartmentId());
     }
 
     @Test
-    public void setWrittenBy() {
+    public void setDepartmentId() {
         Article testArticle = setupReview();
-        testArticle.setWrittenBy("Mike");
-        assertNotEquals("Kim", testArticle.getWrittenBy());
-    }
-
-    @Test
-    public void getRating() {
-        Article testArticle = setupReview();
-        assertEquals(4, testArticle.getRating());
-    }
-
-    @Test
-    public void setRating() {
-        Article testArticle = setupReview();
-        testArticle.setRating(1);
-        assertNotEquals(4, testArticle.getRating());
-    }
-
-    @Test
-    public void getRestaurantId() {
-        Article testArticle = setupReview();
-        assertEquals(1, testArticle.getRestaurantId());
-    }
-
-    @Test
-    public void setRestaurantId() {
-        Article testArticle = setupReview();
-        testArticle.setRestaurantId(10);
-        assertNotEquals(1, testArticle.getRestaurantId());
+        testArticle.setDepartmentId(10);
+        assertNotEquals(1, testArticle.getDepartmentId());
     }
 
     @Test
@@ -78,6 +53,6 @@ public class ArticleTest {
 
     // helper
     public Article setupReview (){
-        return new Article("Great service", "Kim", 4, 1);
+        return new Article("Great service", 4);
     }
 }
