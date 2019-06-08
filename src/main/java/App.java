@@ -11,6 +11,8 @@ import models.dao.Sql2ODepartmentDao;
 import models.dao.Sql2OArticleDao;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
+import spark.ModelAndView;
+import spark.template.handlebars.HandlebarsTemplateEngine;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +44,20 @@ public class App {
         }
 
         port(port);
+
+
+
+        get("/", (req, res) -> {
+            Map<String, Object> model = new HashMap<>();
+//            List<Department> allDepartments = departmentDao.getAll();
+//            model.put("departments", allDepartments);
+//            List<Employee> employees = employeeDao.getAll();
+//            model.put("employees", employees);
+            return new ModelAndView(model, "index.hbs");
+        }, new HandlebarsTemplateEngine());
+
+
+
 
         //CREATE
         post("/departments/:departmentId/user/:userId", "application/json", (req, res) -> {
@@ -171,11 +187,11 @@ public class App {
             res.body(gson.toJson(jsonMap));
         });
 
-
-        after((req, res) -> {
-
-            res.type("application/json");
-        });
+//
+//        after((req, res) -> {
+//
+//            res.type("application/json");
+//        });
 
     }
 }
