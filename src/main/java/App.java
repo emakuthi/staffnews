@@ -19,19 +19,6 @@ import java.util.Map;
 public class App {
     public static void main(String[] args) {
 
-
-        ProcessBuilder process=new ProcessBuilder();
-        Integer port;
-
-        if(process.environment().get("PORT")!=null){
-            port = Integer.parseInt(process.environment().get("PORT"));
-        } else {
-            port = 4567;
-        }
-
-        port(port);
-
-
         Sql2OUserDao userDao;
         Sql2ODepartmentDao departmentDao;
         Sql2OArticleDao articleDao;
@@ -43,6 +30,18 @@ public class App {
         userDao = new Sql2OUserDao(DB.sql2o);
         articleDao = new Sql2OArticleDao(DB.sql2o);
         conn = DB.sql2o.open();
+
+
+        ProcessBuilder process=new ProcessBuilder();
+        Integer port;
+
+        if(process.environment().get("PORT")!=null){
+            port = Integer.parseInt(process.environment().get("PORT"));
+        } else {
+            port = 4567;
+        }
+
+        port(port);
 
         //CREATE
         post("/departments/:departmentId/user/:userId", "application/json", (req, res) -> {

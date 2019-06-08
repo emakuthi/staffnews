@@ -1,0 +1,1 @@
+web: ./build/install/staffnews/bin/staffnews
