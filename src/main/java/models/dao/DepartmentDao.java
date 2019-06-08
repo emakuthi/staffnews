@@ -5,7 +5,7 @@ import models.Foodtype;
 
 import java.util.List;
 
-public interface RestaurantDao {
+public interface DepartmentDao {
     //create
     void add (Department department);
     void addRestaurantToFoodtype(Department department, Foodtype foodtype);

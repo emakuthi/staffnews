@@ -6,7 +6,7 @@ import models.Department;
 import models.Foodtype;
 import models.Review;
 import models.dao.Sql2oFoodtypeDao;
-import models.dao.Sql2oRestaurantDao;
+import models.dao.Sql2ODepartmentDao;
 import models.dao.Sql2oReviewDao;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
@@ -18,7 +18,7 @@ import java.util.Map;
 public class App {
     public static void main(String[] args) {
         Sql2oFoodtypeDao foodtypeDao;
-        Sql2oRestaurantDao restaurantDao;
+        Sql2ODepartmentDao restaurantDao;
         Sql2oReviewDao reviewDao;
         Connection conn;
         Gson gson = new Gson();
@@ -27,7 +27,7 @@ public class App {
         String connectionString = "jdbc:h2:~/jadle.db;INIT=RUNSCRIPT from 'classpath:db/create.sql'";
         Sql2o sql2o = new Sql2o(connectionString, "", "");
 
-        restaurantDao = new Sql2oRestaurantDao(sql2o);
+        restaurantDao = new Sql2ODepartmentDao(sql2o);
         foodtypeDao = new Sql2oFoodtypeDao(sql2o);
         reviewDao = new Sql2oReviewDao(sql2o);
         conn = sql2o.open();

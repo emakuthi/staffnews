@@ -15,7 +15,7 @@ import static org.junit.Assert.assertNotEquals;
 
 public class Sql2ODepartmentDaoTest {
     private Connection conn;
-    private Sql2oRestaurantDao restaurantDao;
+    private Sql2ODepartmentDao restaurantDao;
     private Sql2oFoodtypeDao foodtypeDao;
     private Sql2oReviewDao reviewDao;
 
@@ -23,7 +23,7 @@ public class Sql2ODepartmentDaoTest {
     public void setUp() throws Exception {
         String connectionString = "jdbc:h2:mem:testing;INIT=RUNSCRIPT from 'classpath:db/create.sql'";
         Sql2o sql2o = new Sql2o(connectionString, "", "");
-        restaurantDao = new Sql2oRestaurantDao(sql2o);
+        restaurantDao = new Sql2ODepartmentDao(sql2o);
         foodtypeDao = new Sql2oFoodtypeDao(sql2o);
         reviewDao = new Sql2oReviewDao(sql2o);
         conn = sql2o.open();
