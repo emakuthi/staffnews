@@ -15,9 +15,6 @@ public interface UserDao {
     List<Department> getAllDepartmentsForAUser(int id);
     User findById(int id);
 
-    //update
-    //omit for now
-
     //delete
     void deleteById(int id);
     void clearAll();

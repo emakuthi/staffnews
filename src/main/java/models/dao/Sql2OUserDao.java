@@ -9,13 +9,13 @@ import org.sql2o.Sql2oException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Sql2OUserDao implements UserDao { //don't forget to shake hands with your interface!
+public class Sql2OUserDao implements UserDao {
     private final Sql2o sql2o;
     public Sql2OUserDao(Sql2o sql2o){ this.sql2o = sql2o; }
 
     @Override
     public void add(User user) {
-        String sql = "INSERT INTO users (name) VALUES (:name)";
+        String sql = "INSERT INTO users (name, number, designation) VALUES (:name, :number, :designation)";
         try(Connection con = sql2o.open()){
             int id = (int) con.createQuery(sql, true)
                     .bind(user)
