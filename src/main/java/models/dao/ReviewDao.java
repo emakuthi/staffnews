@@ -1,16 +1,16 @@
 package models.dao;
 
-import models.Review;
+import models.Article;
 
 import java.util.List;
 
 public interface ReviewDao {
     //create
-    void add(Review review);
+    void add(Article article);
 
     //read
-    List<Review> getAll();
-    List<Review> getAllReviewsByRestaurant(int restaurantId);
+    List<Article> getAll();
+    List<Article> getAllReviewsByRestaurant(int restaurantId);
 
     //update
     //omit for now

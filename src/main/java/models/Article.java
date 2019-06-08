@@ -2,14 +2,14 @@ package models;
 
 import java.util.Objects;
 
-public class Review {
+public class Article {
     private String content;
     private String writtenBy;
     private int rating;
     private int id;
-    private int restaurantId; //will be used to connect Department to Review (one-to-many)
+    private int restaurantId; //will be used to connect Department to Article (one-to-many)
 
-    public Review(String content, String writtenBy, int rating, int restaurantId) {
+    public Article(String content, String writtenBy, int rating, int restaurantId) {
         this.content = content;
         this.writtenBy = writtenBy;
         this.rating = rating;
@@ -59,13 +59,13 @@ public class Review {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Review)) return false;
-        Review review = (Review) o;
-        return rating == review.rating &&
-                id == review.id &&
-                restaurantId == review.restaurantId &&
-                Objects.equals(content, review.content) &&
-                Objects.equals(writtenBy, review.writtenBy);
+        if (!(o instanceof Article)) return false;
+        Article article = (Article) o;
+        return rating == article.rating &&
+                id == article.id &&
+                restaurantId == article.restaurantId &&
+                Objects.equals(content, article.content) &&
+                Objects.equals(writtenBy, article.writtenBy);
     }
 
     @Override

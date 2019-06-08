@@ -2,9 +2,9 @@ import static spark.Spark.*;
 
 import com.google.gson.Gson;
 import exceptions.ApiException;
+import models.Article;
 import models.Department;
 import models.Staff;
-import models.Review;
 import models.dao.Sql2OStaffDao;
 import models.dao.Sql2ODepartmentDao;
 import models.dao.Sql2oReviewDao;
@@ -83,12 +83,12 @@ public class App {
 
         post("/restaurants/:restaurantId/reviews/new", "application/json", (req, res) -> {
             int restaurantId = Integer.parseInt(req.params("restaurantId"));
-            Review review = gson.fromJson(req.body(), Review.class);
+            Article article = gson.fromJson(req.body(), Article.class);
 
-            review.setRestaurantId(restaurantId); //we need to set this separately because it comes from our route, not our JSON input.
-            reviewDao.add(review);
+            article.setRestaurantId(restaurantId); //we need to set this separately because it comes from our route, not our JSON input.
+            reviewDao.add(article);
             res.status(201);
-            return gson.toJson(review);
+            return gson.toJson(article);
         });
 
         post("/foodtypes/new", "application/json", (req, res) -> {
@@ -125,15 +125,15 @@ public class App {
             int restaurantId = Integer.parseInt(req.params("id"));
 
             Department departmentToFind = restaurantDao.findById(restaurantId);
-            List<Review> allReviews;
+            List<Article> allArticles;
 
             if (departmentToFind == null){
                 throw new ApiException(404, String.format("No restaurant with the id: \"%s\" exists", req.params("id")));
             }
 
-            allReviews = reviewDao.getAllReviewsByRestaurant(restaurantId);
+            allArticles = reviewDao.getAllReviewsByRestaurant(restaurantId);
 
-            return gson.toJson(allReviews);
+            return gson.toJson(allArticles);
         });
 
         get("/foodtypes", "application/json", (req, res) -> {

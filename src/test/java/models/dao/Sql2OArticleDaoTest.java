@@ -1,7 +1,7 @@
 package models.dao;
 
+import models.Article;
 import models.Department;
-import models.Review;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,7 +10,7 @@ import org.sql2o.Sql2o;
 
 import static org.junit.Assert.assertEquals;
 
-public class Sql2oReviewDaoTest {
+public class Sql2OArticleDaoTest {
     private Connection conn;
     private Sql2oReviewDao reviewDao;
     private Sql2ODepartmentDao restaurantDao;
@@ -31,14 +31,14 @@ public class Sql2oReviewDaoTest {
 
     @Test
     public void addingReviewSetsId() throws Exception {
-        Review testReview = setupReview();
-        assertEquals(1, testReview.getId());
+        Article testArticle = setupReview();
+        assertEquals(1, testArticle.getId());
     }
 
     @Test
     public void getAll() throws Exception {
-        Review review1 = setupReview();
-        Review review2 = setupReview();
+        Article article1 = setupReview();
+        Article article2 = setupReview();
         assertEquals(2, reviewDao.getAll().size());
     }
 
@@ -46,41 +46,41 @@ public class Sql2oReviewDaoTest {
     public void getAllReviewsByRestaurant() throws Exception {
         Department testDepartment = setupRestaurant();
         Department otherDepartment = setupRestaurant(); //add in some extra data to see if it interferes
-        Review review1 = setupReviewForRestaurant(testDepartment);
-        Review review2 = setupReviewForRestaurant(testDepartment);
-        Review reviewForOtherRestaurant = setupReviewForRestaurant(otherDepartment);
+        Article article1 = setupReviewForRestaurant(testDepartment);
+        Article article2 = setupReviewForRestaurant(testDepartment);
+        Article articleForOtherRestaurant = setupReviewForRestaurant(otherDepartment);
         assertEquals(2, reviewDao.getAllReviewsByRestaurant(testDepartment.getId()).size());
     }
 
     @Test
     public void deleteById() throws Exception {
-        Review testReview = setupReview();
-        Review otherReview = setupReview();
+        Article testArticle = setupReview();
+        Article otherArticle = setupReview();
         assertEquals(2, reviewDao.getAll().size());
-        reviewDao.deleteById(testReview.getId());
+        reviewDao.deleteById(testArticle.getId());
         assertEquals(1, reviewDao.getAll().size());
     }
 
     @Test
     public void clearAll() throws Exception {
-        Review testReview = setupReview();
-        Review otherReview = setupReview();
+        Article testArticle = setupReview();
+        Article otherArticle = setupReview();
         reviewDao.clearAll();
         assertEquals(0, reviewDao.getAll().size());
     }
 
     //helpers
 
-    public Review setupReview() {
-        Review review = new Review("great", "Kim", 4, 555);
-        reviewDao.add(review);
-        return review;
+    public Article setupReview() {
+        Article article = new Article("great", "Kim", 4, 555);
+        reviewDao.add(article);
+        return article;
     }
 
-    public Review setupReviewForRestaurant(Department department) {
-        Review review = new Review("great", "Kim", 4, department.getId());
-        reviewDao.add(review);
-        return review;
+    public Article setupReviewForRestaurant(Department department) {
+        Article article = new Article("great", "Kim", 4, department.getId());
+        reviewDao.add(article);
+        return article;
     }
 
     public Department setupRestaurant() {

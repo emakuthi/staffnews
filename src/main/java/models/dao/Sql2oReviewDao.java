@@ -1,6 +1,6 @@
 package models.dao;
 
-import models.Review;
+import models.Article;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
@@ -12,33 +12,33 @@ public class Sql2oReviewDao implements ReviewDao{
     public Sql2oReviewDao(Sql2o sql2o) { this.sql2o = sql2o; }
 
     @Override
-    public void add(Review review) {
+    public void add(Article article) {
         String sql = "INSERT INTO reviews (writtenby, content, rating, restaurantid) VALUES (:writtenBy, :content, :rating, :restaurantId)"; //if you change your model, be sure to update here as well!
         try (Connection con = sql2o.open()) {
             int id = (int) con.createQuery(sql, true)
-                    .bind(review)
+                    .bind(article)
                     .executeUpdate()
                     .getKey();
-            review.setId(id);
+            article.setId(id);
         } catch (Sql2oException ex) {
             System.out.println(ex);
         }
     }
 
     @Override
-    public List<Review> getAll() {
+    public List<Article> getAll() {
         try (Connection con = sql2o.open()) {
             return con.createQuery("SELECT * FROM reviews")
-                    .executeAndFetch(Review.class);
+                    .executeAndFetch(Article.class);
         }
     }
 
     @Override
-    public List<Review> getAllReviewsByRestaurant(int restaurantId) {
+    public List<Article> getAllReviewsByRestaurant(int restaurantId) {
         try (Connection con = sql2o.open()) {
             return con.createQuery("SELECT * FROM reviews WHERE restaurantId = :restaurantId")
                     .addParameter("restaurantId", restaurantId)
-                    .executeAndFetch(Review.class);
+                    .executeAndFetch(Article.class);
         }
     }
 
