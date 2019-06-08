@@ -17,7 +17,7 @@ public class Sql2ODepartmentDaoTest {
     private Connection conn;
     private Sql2ODepartmentDao restaurantDao;
     private Sql2OStaffDao foodtypeDao;
-    private Sql2oReviewDao reviewDao;
+    private Sql2OArticleDao reviewDao;
 
     @Before
     public void setUp() throws Exception {
@@ -25,7 +25,7 @@ public class Sql2ODepartmentDaoTest {
         Sql2o sql2o = new Sql2o(connectionString, "", "");
         restaurantDao = new Sql2ODepartmentDao(sql2o);
         foodtypeDao = new Sql2OStaffDao(sql2o);
-        reviewDao = new Sql2oReviewDao(sql2o);
+        reviewDao = new Sql2OArticleDao(sql2o);
         conn = sql2o.open();
     }
 

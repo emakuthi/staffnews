@@ -4,7 +4,7 @@ import models.Article;
 
 import java.util.List;
 
-public interface ReviewDao {
+public interface ArticleDao {
     //create
     void add(Article article);
 

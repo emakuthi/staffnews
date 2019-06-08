@@ -7,9 +7,9 @@ import org.sql2o.Sql2oException;
 
 import java.util.List;
 
-public class Sql2oReviewDao implements ReviewDao{
+public class Sql2OArticleDao implements ArticleDao {
     private final Sql2o sql2o;
-    public Sql2oReviewDao(Sql2o sql2o) { this.sql2o = sql2o; }
+    public Sql2OArticleDao(Sql2o sql2o) { this.sql2o = sql2o; }
 
     @Override
     public void add(Article article) {

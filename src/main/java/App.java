@@ -7,7 +7,7 @@ import models.Department;
 import models.Staff;
 import models.dao.Sql2OStaffDao;
 import models.dao.Sql2ODepartmentDao;
-import models.dao.Sql2oReviewDao;
+import models.dao.Sql2OArticleDao;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 
@@ -19,7 +19,7 @@ public class App {
     public static void main(String[] args) {
         Sql2OStaffDao foodtypeDao;
         Sql2ODepartmentDao restaurantDao;
-        Sql2oReviewDao reviewDao;
+        Sql2OArticleDao reviewDao;
         Connection conn;
         Gson gson = new Gson();
 
@@ -29,7 +29,7 @@ public class App {
 
         restaurantDao = new Sql2ODepartmentDao(sql2o);
         foodtypeDao = new Sql2OStaffDao(sql2o);
-        reviewDao = new Sql2oReviewDao(sql2o);
+        reviewDao = new Sql2OArticleDao(sql2o);
         conn = sql2o.open();
 
         //CREATE

@@ -12,14 +12,14 @@ import static org.junit.Assert.assertEquals;
 
 public class Sql2OArticleDaoTest {
     private Connection conn;
-    private Sql2oReviewDao reviewDao;
+    private Sql2OArticleDao reviewDao;
     private Sql2ODepartmentDao restaurantDao;
 
     @Before
     public void setUp() throws Exception {
         String connectionString = "jdbc:h2:mem:testing;INIT=RUNSCRIPT from 'classpath:db/create.sql'";
         Sql2o sql2o = new Sql2o(connectionString, "", "");
-        reviewDao = new Sql2oReviewDao(sql2o);
+        reviewDao = new Sql2OArticleDao(sql2o);
         restaurantDao = new Sql2ODepartmentDao(sql2o);
         conn = sql2o.open();
     }
