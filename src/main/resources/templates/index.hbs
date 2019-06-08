@@ -1,78 +1,65 @@
 {{#partial "content"}}
 
-    <p> List of Field Operation Departments</p>
+    <p> Below are the list of apis which can be used to peform any operation to the data base</p>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">No.</th>
+            <th scope="col">API ROUTE</th>
+            <th scope="col">DESCRIPTION</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td></td>
+            <td>/departments/new - POST</td>
+            <td>create a new department</td>
+        </tr>
 
-    {{#if departments}}
-        <p> click on the Department's Name to view the employee Allocated !!</p>
-    {{else}}
-        <p>click<a href="/departments/new">here</a>to add an Department</p>
-    {{/if}}
+        <tr>
+            <td></td>
+            <td>/users/new - POST</td>
+            <td>create a new user/ employee.</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>/departments/:departmentId/user/:userId - POST</td>
+            <td>create a new user/ employee to specific department</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>/departments/:id/users - GET</td>
+            <td>list all the users from a specific department</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>/users/:id/departments - GET</td>
+            <td>list all users and departments they can access the news</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>/departments/:departmentId/articles/new - POST</td>
+            <td>creating news for specific department</td>
+        </tr>
+        <tr>
 
-    {{#if departments}}
+            <td></td>
+            <td>/departments/:id - GET</td>
+            <td>view details of a specific department</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>/departments/:id/articles - GET</td>
+            <td>getting all the articles for a specific department</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>/users - GET</td>
+            <td>listing all the users.</td>
+        </tr>
 
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">No.</th>
-                <th scope="col">NAME</th>
-                <th scope="col">DESCRIPTION</th>
-            </tr>
-            </thead>
-
-            {{#each departments }}
-
-                <tbody>
-                <tr>
-                    <td></td>
-                    <td><a href="/departments/{{id}}">{{name}}</td>
-                    <td>{{description}}</td>
-                </tr>
-                </tbody>
-            {{/each}}
-        </table>
-
-    {{else}}
-        <p> Below are the list of apis which can be used to peform any operation to the data base</p>
-
-
-
-        1. /departments/new - POST
-
-        - create a new department
-
-        2. /users/new - POST
-
-        - create a new user/ employee.
-        3. /departments/:departmentId/user/:userId - POST
-
-        - create a new user/ employee to specific department.
-
-        4. /departments/:id/users - GET
-
-        - list all the users from a specific department
-
-        5. /users/:id/departments - GET
-
-        - list all users and departments they can access the news
-
-        6. /departments/:departmentId/articles/new - POST
-
-        -creating news for specific department
-
-        7. /departments/:id - GET
-
-        - view details of a specific department
-
-        8. /departments/:id/articles - GET
-
-        - getting all the articles for a specific department
-
-        9. /users - GET
-
-        - listing all the users.
-
-    {{/if}}
-    {{name}}
+        </tbody>
+    </table>
 {{/partial}}
 
 {{> layout.hbs}}
