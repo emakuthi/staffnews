@@ -108,18 +108,18 @@ there are currently no known bugs experienced on the website but feedback on bug
 
 ## live link:
 
-<https://staffnews.herokuapp.com/>
+<https://safaricomnews.herokuapp.com/>
 
 # clone into repository
 
-* git clone https://github.com/emakuthi/sitePlanner.git
+* git clone https://github.com/emakuthi/staffnews.git
 * Open using your favorite editor and view the code or just open the index.html on the browser
 
 ## Feedback
 
 Incase of any issues or feedback please add using any of below links.
 
-* [Issues](https://github.com/emakuthi/sitePlanner/issues). To submit any issues.
+* [Issues](https://github.com/emakuthi/staffnews/issues). To submit any issues.
 
 * [email](emakuthi@gmail.com) for any other feedback.
 
