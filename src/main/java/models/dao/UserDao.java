@@ -8,7 +8,7 @@ import java.util.List;
 public interface UserDao {
     //create
     void add(User user);
-    void addUserToDepartment(User user, Department department);
+    void addUserToDepartment( Department department, User user);
 
     //read
     List<User> getAll();
