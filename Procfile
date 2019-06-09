@@ -1,1 +1,1 @@
-web: ./build/install/staffnews/bin/staffnews
+web: ./build/install/safaricomnews/bin/safaricomnews
