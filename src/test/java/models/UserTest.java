@@ -17,26 +17,26 @@ public class UserTest {
     }
     @Test
     public void getName() {
-        User testUser = setupFoodtype();
+        User testUser = setupUser();
         assertEquals("dessert", testUser.getName());
     }
 
     @Test
     public void setName() {
-        User testUser = setupFoodtype();
+        User testUser = setupUser();
         testUser.setName("breakfast");
         assertNotEquals("dessert", testUser.getName());
     }
 
     @Test
     public void setId() {
-        User testUser = setupFoodtype();
+        User testUser = setupUser();
         testUser.setId(5);
         assertEquals(5, testUser.getId());
     }
 
     // helper
-    public User setupFoodtype(){
-        return new User("dessert");
+    public User setupUser(){
+        return new User("dessert","ek124", "engineer");
     }
 }

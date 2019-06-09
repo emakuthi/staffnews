@@ -19,13 +19,13 @@ public class ArticleTest {
 
     @Test
     public void getContent() {
-        Article testArticle = setupReview();
+        Article testArticle = setupArticle();
         assertEquals("Great service", testArticle.getContent());
     }
 
     @Test
     public void setContent() {
-        Article testArticle = setupReview();
+        Article testArticle = setupArticle();
         testArticle.setContent("No free dessert :(");
         assertNotEquals("Great service", testArticle.getContent());
     }
@@ -33,26 +33,26 @@ public class ArticleTest {
     
     @Test
     public void getDepartmentId() {
-        Article testArticle = setupReview();
-        assertEquals(1, testArticle.getDepartmentId());
+        Article testArticle = setupArticle();
+        assertEquals(4, testArticle.getDepartmentId());
     }
 
     @Test
     public void setDepartmentId() {
-        Article testArticle = setupReview();
+        Article testArticle = setupArticle();
         testArticle.setDepartmentId(10);
         assertNotEquals(1, testArticle.getDepartmentId());
     }
 
     @Test
     public void setId() {
-        Article testArticle = setupReview();
+        Article testArticle = setupArticle();
         testArticle.setId(5);
         assertEquals(5, testArticle.getId());
     }
 
     // helper
-    public Article setupReview (){
+    public Article setupArticle (){
         return new Article("Great service", 4);
     }
 }
