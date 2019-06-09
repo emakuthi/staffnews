@@ -3,6 +3,7 @@ package models.dao;
 import models.Department;
 import models.User;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.sql2o.Connection;
@@ -12,22 +13,33 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 public class Sql2OUserDaoTest {
-    private Sql2OUserDao userDao;
-    private Sql2ODepartmentDao restaurantDao;
-    private Connection conn;
+    private static Connection conn;
+    private static Sql2ODepartmentDao departmentDao;
+    private static Sql2OUserDao userDao;
+    private static Sql2OArticleDao articleDao;
 
     @Before
     public void setUp() throws Exception {
-        String connectionString = "jdbc:h2:mem:testing;INIT=RUNSCRIPT from 'classpath:db/create.sql'";
-        Sql2o sql2o = new Sql2o(connectionString, "", "");
-        restaurantDao = new Sql2ODepartmentDao(sql2o);
-        userDao = new Sql2OUserDao(sql2o);
+        String connectionString = "jdbc:postgresql://localhost:5432/dept_news_test";  //connect to postgres test database
+        Sql2o sql2o = new Sql2o(connectionString, "developer", "elvis"); //changed user and pass to null
+        departmentDao = new Sql2ODepartmentDao(DB.sql2o);
+        userDao = new Sql2OUserDao(DB.sql2o);
+        articleDao = new Sql2OArticleDao(DB.sql2o);
         conn = sql2o.open();
     }
 
     @After
     public void tearDown() throws Exception {
+        departmentDao.clearAll();
+        articleDao.clearAll();
+        userDao.clearAll();
+        System.out.println("clearing database");
+    }
+
+    @AfterClass
+    public static void shutDown() throws Exception{ //changed to static
         conn.close();
+        System.out.println("connection closed");
     }
 
     @Test
@@ -35,7 +47,7 @@ public class Sql2OUserDaoTest {
         User testUser = setupNewUser();
         int originalUserId = testUser.getId();
         userDao.add(testUser);
-        assertNotEquals(originalUserId, testUser.getId());
+        assertNotEquals(originalUserId,testUser.getId());
     }
 
     @Test
@@ -67,13 +79,13 @@ public class Sql2OUserDaoTest {
     }
 
     @Test
-    public void addFoodTypeToDepartmentAddsTypeCorrectly() throws Exception {
+    public void addUserToDepartmentAddsTypeCorrectly() throws Exception {
 
         Department testDepartment = setupDepartment();
         Department altDepartment = setupAltDepartment();
 
-        restaurantDao.add(testDepartment);
-        restaurantDao.add(altDepartment);
+        departmentDao.add(testDepartment);
+        departmentDao.add(altDepartment);
 
         User testUser = setupNewUser();
 
@@ -85,21 +97,55 @@ public class Sql2OUserDaoTest {
         assertEquals(2, userDao.getAllDepartmentsForAUser(testUser.getId()).size());
     }
 
+    @Test
+    public void deletingDepartmentAlsoUpdatesJoinTable() throws Exception {
+        User testUser  = new User("Seafood","Ek200","technician");
+        userDao.add(testUser);
+
+        Department testDepartment = setupDepartment();
+        departmentDao.add(testDepartment);
+
+        Department altDepartment = setupAltDepartment();
+        departmentDao.add(altDepartment);
+
+        departmentDao.addDepartmentToUser(testDepartment,testUser);
+        departmentDao.addDepartmentToUser(altDepartment, testUser);
+
+        departmentDao.deleteById(testDepartment.getId());
+        assertEquals(0, departmentDao.getAllUsersByDepartment(testDepartment.getId()).size());
+    }
+
+    @Test
+    public void deletingUserAlsoUpdatesJoinTable() throws Exception {
+
+        Department testDepartment = setupDepartment();
+
+        departmentDao.add(testDepartment);
+
+        User testUser = setupNewUser();
+        User otherUser = new User("Japanese", "EK0006", "engineer");
+
+        userDao.add(testUser);
+        userDao.add(otherUser);
+
+        userDao.addUserToDepartment(testUser, testDepartment);
+        userDao.addUserToDepartment(otherUser,testDepartment);
+
+        userDao.deleteById(testDepartment.getId());
+        assertEquals(1, userDao.getAllDepartmentsForAUser(testUser.getId()).size());
+    }
+
     // helpers
 
     public User setupNewUser(){
-        return new User("Sushi","ek129", "enginee");
+        return new User("Sushi", "ek200", "engineer");
     }
 
     public Department setupDepartment (){
-        Department department = new Department("Fish Omena", "214 NE Safaricom");
-        restaurantDao.add(department);
-        return department;
+        return new Department("Fish Omena", "214 NE Ngara");
     }
 
     public Department setupAltDepartment (){
-        Department department = new Department("Fish Omena", "214 NE Safaricom");
-        restaurantDao.add(department);
-        return department;
+        return new Department("Fish Omena", "214 NE Ngara");
     }
 }

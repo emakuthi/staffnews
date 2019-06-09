@@ -2,9 +2,7 @@ package models.dao;
 
 import models.Department;
 import models.User;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 
@@ -14,30 +12,42 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 public class Sql2ODepartmentDaoTest {
-    private Connection conn;
-    private Sql2ODepartmentDao departmentDao;
-    private Sql2OUserDao userDao;
-    private Sql2OArticleDao articleDao;
+    private static Connection conn; //these variables are now static.
+    private static Sql2ODepartmentDao departmentDao; //these variables are now static.
+    private static Sql2OUserDao userDao; //these variables are now static.
+    private static Sql2OArticleDao articleDao; //these variables are now static.
 
-    @Before
-    public void setUp() throws Exception {
-        String connectionString = "jdbc:h2:mem:testing;INIT=RUNSCRIPT from 'classpath:db/create.sql'";
-        Sql2o sql2o = new Sql2o(connectionString, "", "");
-        departmentDao = new Sql2ODepartmentDao(sql2o);
-        userDao = new Sql2OUserDao(sql2o);
-        articleDao = new Sql2OArticleDao(sql2o);
-        conn = sql2o.open();
+    @BeforeClass                //changed to @BeforeClass (run once before running any tests in this file)
+    public static void setUp() throws Exception {
+        String connectionString = "jdbc:postgresql://localhost:5432/dept_news_test";  //connect to postgres test database
+        Sql2o sql2o = new Sql2o(connectionString, "developer", "elvis"); //changed user and pass to null
+        departmentDao = new Sql2ODepartmentDao(DB.sql2o);
+        userDao = new Sql2OUserDao(DB.sql2o);
+        articleDao = new Sql2OArticleDao(DB.sql2o);
+        conn = sql2o.open();        //open connection once before this test file is run
     }
 
-    @After
+    @After              //run after every test
     public void tearDown() throws Exception {
-        conn.close();
+        System.out.println("clearing database");
+        departmentDao.clearAll(); //clear all departments after every test
+        userDao.clearAll(); //clear all departments after every test
+        articleDao.clearAll(); //clear all departments after every test
     }
+
+    @AfterClass     //changed to @AfterClass (run once after all tests in this file completed)
+    public static void shutDown() throws Exception{ //changed to static
+        conn.close(); // close connection once after this entire test file is finished
+        System.out.println("connection closed");
+    }
+
 
     @Test
     public void addingFoodSetsId() throws Exception {
         Department testDepartment = setupDepartment();
-        assertNotEquals(0, testDepartment.getId());
+        int originalDepartmentId = testDepartment.getId();
+        departmentDao.add(testDepartment);
+        assertNotEquals(originalDepartmentId, testDepartment.getId());
     }
 
     @Test
@@ -65,15 +75,14 @@ public class Sql2ODepartmentDaoTest {
         Department foundDepartment = departmentDao.findById(testDepartment.getId());
         assertEquals("a", foundDepartment.getName());
         assertEquals("b", foundDepartment.getDescription());
-       
+
     }
 
     @Test
     public void deleteByIdDeletesCorrectDepartment() throws Exception {
         Department testDepartment = setupDepartment();
-        Department otherDepartment = setupDepartment();
         departmentDao.deleteById(testDepartment.getId());
-        assertEquals(1, departmentDao.getAll().size());
+        assertEquals(0, departmentDao.getAll().size());
     }
 
     @Test
@@ -85,21 +94,39 @@ public class Sql2ODepartmentDaoTest {
     }
 
     @Test
-    public void DepartmentReturnsUsersCorrectly() throws Exception {
-        User testUser = new User("Seafood","ek213","engineer");
+    public void getAllUsersForADepartmentReturnsUsersCorrectly() throws Exception {
+        User testUser  = new User("Seafood", "ek123", "engineer");
         userDao.add(testUser);
 
-        User otherUser = new User("Bar Food", "ek167", "principal");
+        User otherUser  = new User("Bar Food", "ek109", "technician");
         userDao.add(otherUser);
 
         Department testDepartment = setupDepartment();
         departmentDao.add(testDepartment);
-        departmentDao.addDepartmentToUser(testDepartment, testUser);
-        departmentDao.addDepartmentToUser(testDepartment, otherUser);
+        departmentDao.addDepartmentToUser(testDepartment,testUser);
+        departmentDao.addDepartmentToUser(testDepartment,otherUser);
 
         User[] users = {testUser, otherUser}; //oh hi what is this?
 
         assertEquals(Arrays.asList(users), departmentDao.getAllUsersByDepartment(testDepartment.getId()));
+    }
+
+    @Test
+    public void deleteingDepartmentAlsoUpdatesJoinTable() throws Exception {
+        User testUser  = new User("Seafood", "ek1234", "engineer");
+        userDao.add(testUser);
+
+        Department testDepartment = setupDepartment();
+        departmentDao.add(testDepartment);
+
+        Department altDepartment = setupAltDepartment();
+        departmentDao.add(altDepartment);
+
+        departmentDao.addDepartmentToUser(testDepartment,testUser);
+        departmentDao.addDepartmentToUser(altDepartment, testUser);
+
+        departmentDao.deleteById(testDepartment.getId());
+        assertEquals(0, departmentDao.getAllUsersByDepartment(testDepartment.getId()).size());
     }
 
 

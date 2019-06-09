@@ -2,85 +2,148 @@ package models.dao;
 
 import models.Article;
 import models.Department;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class Sql2OArticleDaoTest {
-    private Connection conn;
-    private Sql2OArticleDao articleDao;
-    private Sql2ODepartmentDao departmentDao;
+    private static Connection conn; //these variables are now static.
+    private static Sql2ODepartmentDao departmentDao; //these variables are now static.
+    private static Sql2OUserDao foodtypeDao; //these variables are now static.
+    private static Sql2OArticleDao reviewDao; //these variables are now static.
 
-    @Before
-    public void setUp() throws Exception {
-        String connectionString = "jdbc:h2:mem:testing;INIT=RUNSCRIPT from 'classpath:db/create.sql'";
-        Sql2o sql2o = new Sql2o(connectionString, "", "");
-        articleDao = new Sql2OArticleDao(sql2o);
-        departmentDao = new Sql2ODepartmentDao(sql2o);
+    @BeforeClass
+    public static void setUp() throws Exception {
+        String connectionString = "jdbc:postgresql://localhost:5432/dept_news_test";  //connect to postgres test database
+        Sql2o sql2o = new Sql2o(connectionString, "developer", "elvis");
+        departmentDao = new Sql2ODepartmentDao(DB.sql2o);
+        foodtypeDao = new Sql2OUserDao(DB.sql2o);
+        reviewDao = new Sql2OArticleDao(DB.sql2o);
         conn = sql2o.open();
     }
 
     @After
     public void tearDown() throws Exception {
+        System.out.println("clearing database");
+        departmentDao.clearAll(); //clear all departments after every test
+        foodtypeDao.clearAll(); //clear all departments after every test
+        reviewDao.clearAll();
+    }
+
+    @AfterClass
+    public static void shutDown() throws Exception{ //changed to static
         conn.close();
+        System.out.println("connection closed");
     }
 
     @Test
     public void addingArticleSetsId() throws Exception {
-        Article testArticle = setupArticle();
-        assertEquals(1, testArticle.getId());
+        Department testDepartment = setupDepartment();
+        departmentDao.add(testDepartment);
+        Article testArticle = new Article("Captain Kirk", 3);
+        int originalArticleId = testArticle.getId();
+        reviewDao.add(testArticle);
+        assertNotEquals(originalArticleId,testArticle.getId());
     }
 
     @Test
     public void getAll() throws Exception {
-        Article article1 = setupArticle();
-        Article article2 = setupArticle();
-        assertEquals(2, articleDao.getAll().size());
+        Article review1 = setupArticle();
+        Article review2 = setupArticle();
+        assertEquals(2, reviewDao.getAll().size());
     }
 
     @Test
     public void getAllArticlesByDepartment() throws Exception {
         Department testDepartment = setupDepartment();
-        Department otherDepartment = setupDepartment();
-        Article article1 = setupArticleForDepartment(testDepartment);
-        Article article2 = setupArticleForDepartment(testDepartment);
-        Article articleForOtherDepartment = setupArticleForDepartment(otherDepartment);
-        assertEquals(2, articleDao.getAllArticlesByDepartment(testDepartment.getId()).size());
+        Department otherDepartment = setupDepartment(); //add in some extra data to see if it interferes
+        Article review1 = setupArticleForDepartment(testDepartment);
+        Article review2 = setupArticleForDepartment(testDepartment);
+        Article reviewForOtherDepartment = setupArticleForDepartment(otherDepartment);
+        assertEquals(2, reviewDao.getAllArticlesByDepartment(testDepartment.getId()).size());
     }
 
     @Test
     public void deleteById() throws Exception {
         Article testArticle = setupArticle();
         Article otherArticle = setupArticle();
-        assertEquals(2, articleDao.getAll().size());
-        articleDao.deleteById(testArticle.getId());
-        assertEquals(1, articleDao.getAll().size());
+        assertEquals(2, reviewDao.getAll().size());
+        reviewDao.deleteById(testArticle.getId());
+        assertEquals(1, reviewDao.getAll().size());
     }
 
     @Test
     public void clearAll() throws Exception {
         Article testArticle = setupArticle();
         Article otherArticle = setupArticle();
-        articleDao.clearAll();
-        assertEquals(0, articleDao.getAll().size());
+        reviewDao.clearAll();
+        assertEquals(0, reviewDao.getAll().size());
+    }
+
+    @Test
+    public void timeStampIsReturnedCorrectly() throws Exception {
+        Department testDepartment = setupDepartment();
+        departmentDao.add(testDepartment);
+        Article testArticle = new Article("Captain Kirk",testDepartment.getId());
+        reviewDao.add(testArticle);
+
+    }
+
+    @Test
+    public void reviewsAreReturnedInCorrectOrder() throws Exception {
+        Department testDepartment = setupDepartment();
+        departmentDao.add(testDepartment);
+        Article testArticle = new Article("Captain Kirk", testDepartment.getId());
+        reviewDao.add(testArticle);
+        try {
+            Thread.sleep(2000);
+        }
+        catch (InterruptedException ex){
+            ex.printStackTrace();
+        }
+
+        Article testSecondArticle = new Article("Mr. Spock", testDepartment.getId());
+        reviewDao.add(testSecondArticle);
+
+        try {
+            Thread.sleep(2000);
+        }
+        catch (InterruptedException ex){
+            ex.printStackTrace();
+        }
+
+        Article testThirdArticle = new Article("Scotty", testDepartment.getId());
+        reviewDao.add(testThirdArticle);
+
+        try {
+            Thread.sleep(2000);
+        }
+        catch (InterruptedException ex){
+            ex.printStackTrace();
+        }
+
+        Article testFourthArticle = new Article("Mr. Sulu", testDepartment.getId());
+        reviewDao.add(testFourthArticle);
+
+        assertEquals(4, reviewDao.getAllArticlesByDepartment(testDepartment.getId()).size()); //it is important we verify that the list is the same size.
+
     }
 
     //helpers
 
     public Article setupArticle() {
-        Article article = new Article("great", 1);
-        articleDao.add(article);
-        return article;
+        Article review = new Article("great", 4);
+        reviewDao.add(review);
+        return review;
     }
 
     public Article setupArticleForDepartment(Department department) {
-        Article article = new Article("great", department.getId());
-        articleDao.add(article);
-        return article;
+        Article review = new Article("great", department.getId());
+        reviewDao.add(review);
+        return review;
     }
 
     public Department setupDepartment() {

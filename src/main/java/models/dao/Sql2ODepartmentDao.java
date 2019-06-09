@@ -53,7 +53,6 @@ public class Sql2ODepartmentDao implements DepartmentDao { //don't forget to sha
             con.createQuery(sql)
                     .addParameter("name", newName)
                     .addParameter("description", newDescription)
-                    .addParameter("id", id)
                     .executeUpdate();
         } catch (Sql2oException ex) {
             System.out.println(ex);
