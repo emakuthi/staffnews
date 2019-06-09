@@ -70,9 +70,9 @@ public class App {
 
             if (department != null && user != null){
                 //both exist and can be associated
-                userDao.addUserToDepartment(department, user);
+                userDao.addUserToDepartment(user, department);
                 res.status(201);
-                return gson.toJson(String.format("Department '%s' and User '%s' have been associated", user.getName(), department.getName()));
+                return gson.toJson(String.format("User'%s' and Department'%s' have been associated", user.getName(), department.getName()));
             }
             else {
                 throw new ApiException(404, String.format("Department or User does not exist"));
