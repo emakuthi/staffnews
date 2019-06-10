@@ -93,23 +93,6 @@ public class Sql2ODepartmentDaoTest {
         assertEquals(0, departmentDao.getAll().size());
     }
 
-    @Test
-    public void getAllUsersForADepartmentReturnsUsersCorrectly() throws Exception {
-        User testUser  = new User("Seafood", "ek123", "engineer");
-        userDao.add(testUser);
-
-        User otherUser  = new User("Bar Food", "ek109", "technician");
-        userDao.add(otherUser);
-
-        Department testDepartment = setupDepartment();
-        departmentDao.add(testDepartment);
-        departmentDao.addDepartmentToUser(testDepartment,testUser);
-        departmentDao.addDepartmentToUser(testDepartment,otherUser);
-
-        User[] users = {testUser, otherUser}; //oh hi what is this?
-
-        assertEquals(Arrays.asList(users), departmentDao.getAllUsersByDepartment(testDepartment.getId()));
-    }
 
     @Test
     public void deleteingDepartmentAlsoUpdatesJoinTable() throws Exception {
@@ -133,13 +116,13 @@ public class Sql2ODepartmentDaoTest {
     //helpers
 
     public Department setupDepartment (){
-        Department department = new Department("Fish Omena", "214 NE Ngara");
+        Department department = new Department("a", "b");
         departmentDao.add(department);
         return department;
     }
 
     public Department setupAltDepartment (){
-        Department department = new Department("Fish Omena", "214 NE Ngara");
+        Department department = new Department("b", "214 NE Ngara");
         departmentDao.add(department);
         return department;
     }

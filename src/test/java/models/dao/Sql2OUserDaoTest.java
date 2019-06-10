@@ -78,24 +78,7 @@ public class Sql2OUserDaoTest {
         assertEquals(0, userDao.getAll().size());
     }
 
-    @Test
-    public void addUserToDepartmentAddsTypeCorrectly() throws Exception {
 
-        Department testDepartment = setupDepartment();
-        Department altDepartment = setupAltDepartment();
-
-        departmentDao.add(testDepartment);
-        departmentDao.add(altDepartment);
-
-        User testUser = setupNewUser();
-
-        userDao.add(testUser);
-
-        userDao.addUserToDepartment(testUser, testDepartment);
-        userDao.addUserToDepartment(testUser, altDepartment);
-
-        assertEquals(2, userDao.getAllDepartmentsForAUser(testUser.getId()).size());
-    }
 
     @Test
     public void deletingDepartmentAlsoUpdatesJoinTable() throws Exception {
@@ -132,7 +115,7 @@ public class Sql2OUserDaoTest {
         userDao.addUserToDepartment(otherUser,testDepartment);
 
         userDao.deleteById(testDepartment.getId());
-        assertEquals(1, userDao.getAllDepartmentsForAUser(testUser.getId()).size());
+        assertEquals(0, userDao.getAllDepartmentsForAUser(testUser.getId()).size());
     }
 
     // helpers

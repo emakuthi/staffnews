@@ -88,7 +88,7 @@ public class Sql2ODepartmentDao implements DepartmentDao { //don't forget to sha
 
     @Override
     public void addDepartmentToUser(Department department, User user){
-        String sql = "INSERT INTO departments_users (departmentid, userid) VALUES (:departmentId, :userId)";
+        String sql = "INSERT INTO departments_users (departmentid, usersid) VALUES (:departmentId, :userId)";
         try (Connection con = DB.sql2o.open()) {
             con.createQuery(sql)
                     .addParameter("departmentId", department.getId())
