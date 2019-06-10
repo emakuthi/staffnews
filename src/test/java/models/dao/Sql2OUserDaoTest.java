@@ -125,10 +125,10 @@ public class Sql2OUserDaoTest {
     }
 
     public Department setupDepartment (){
-        return new Department("Fish Omena", "214 NE Ngara");
+        return new Department("Regional operations", "for telecoms deployment");
     }
 
     public Department setupAltDepartment (){
-        return new Department("Fish Omena", "214 NE Ngara");
+        return new Department("Digital IT", "For it operations");
     }
 }
